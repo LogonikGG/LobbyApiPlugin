@@ -46,7 +46,7 @@
                         <artifactId>maven-jar-plugin</artifactId>
                         <version>2.3.1</version>
                         <configuration>
-                            <outputDirectory>C:/Users/GG/Desktop/Logonik/NowUsed/ServerMinecraft1.12.2/Server1.12.2Paper_empty/plugins/</outputDirectory>
+                            <outputDirectory>D:/Users/GG/Desktop/Logonik/NowUsed/ServerMinecraft1.12.2/Server1.12.2Paper_empty/plugins/</outputDirectory>
                         </configuration>
                     </plugin>
 
