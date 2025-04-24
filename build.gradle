@@ -1,0 +1,85 @@
+plugins {
+    id 'java-library'
+    id 'com.gradleup.shadow' version '8.3.0'
+    id 'maven-publish'
+}
+
+group = 'ru.logonik'
+version = '3.0-SNAPSHOT'
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = "spigotmc-repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+
+    maven {
+        url = "https://repo.aikar.co/content/groups/aikar/"
+    }
+
+}
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = System.getProperty("java.home") + "/bin/javac.exe"
+}
+
+shadowJar {
+    relocate 'co.aikar.commands', 'ru.logonik.lobbyapi.acf'
+    relocate 'co.aikar.locales', 'ru.logonik.lobbyapi.locales'
+
+    archiveFileName.set("${project.name}-${project.version}.jar")
+    destinationDirectory = file('D://Users/GG/Desktop/Logonik/NowUsed/1.21.1_WhiteHell_castle/plugins')
+}
+
+build.dependsOn shadowJar
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
+    implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
+    implementation("com.google.code.gson:gson:2.12.1")
+    implementation("ru.logonik:SpiGuiRus:1.0-SNAPSHOT")
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
