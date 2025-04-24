@@ -1,0 +1,23 @@
+package ru.logonik.lobbyapi.commands;
+
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Dependency;
+import org.bukkit.entity.Player;
+import ru.logonik.lobbyapi.LobbyPlayers;
+
+@CommandAlias("players")
+@CommandPermission("command.players")
+public class PlayersCommand extends BaseCommand {
+
+    @Dependency
+    private LobbyPlayers lobbyPlayersApi;
+
+
+    @Default
+    public void players(Player player) {
+
+    }
+}

@@ -1,4 +1,4 @@
-package ru.logonik.lobbyapi;
+package ru.logonik.lobbyapi.models;
 
 /**
  * Presents info of game that Player join

@@ -1,4 +1,4 @@
-package ru.logonik.lobbyapi;
+package ru.logonik.lobbyapi.models;
 
 import org.bukkit.entity.Player;
 
@@ -7,6 +7,6 @@ import org.bukkit.entity.Player;
  *
  */
 public interface LobbyAsksGameHandler {
-    void onLeave(Player player, Reason reason);
+    void onLeave(Player player);
     boolean tryRejoin(Player player);
 }

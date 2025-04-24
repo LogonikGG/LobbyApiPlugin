@@ -1,10 +1,3 @@
 name: LobbyPluginApi
-version: '${project.version}'
+version: '${version}'
 main: ru.logonik.lobbyapi.LobbyPlugin
-commands:
-  lobby:
-    usage: /lobby
-    permission: "lobby.command"
-permissions:
-  lobby.command:
-    default: true
