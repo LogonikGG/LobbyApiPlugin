@@ -7,17 +7,18 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import org.bukkit.entity.Player;
 import ru.logonik.lobbyapi.LobbyPlayers;
+import ru.logonik.lobbyapi.gui.AllPlayersGui;
 
 @CommandAlias("players")
 @CommandPermission("command.players")
 public class PlayersCommand extends BaseCommand {
 
     @Dependency
-    private LobbyPlayers lobbyPlayersApi;
+    private AllPlayersGui allPlayersGui;
 
 
     @Default
     public void players(Player player) {
-
+        allPlayersGui.open(player);
     }
 }

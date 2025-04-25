@@ -1,3 +1,4 @@
 name: LobbyPluginApi
 version: '${version}'
 main: ru.logonik.lobbyapi.LobbyPlugin
+api-version: 1.21.1

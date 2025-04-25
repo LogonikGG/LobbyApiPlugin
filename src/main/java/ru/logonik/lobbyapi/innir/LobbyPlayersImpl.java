@@ -22,6 +22,13 @@ public class LobbyPlayersImpl implements LobbyPlayers {
     public LobbyPlayersImpl(LobbyPlugin plugin, Location lobbyLocation) {
         this.plugin = plugin;
         this.lobbyLocation = lobbyLocation;
+
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        for (Player player : players) {
+            if(Objects.equals(lobbyLocation.getWorld(), player.getWorld())) {
+                inLobby.add(player.getUniqueId());
+            }
+        }
     }
 
     @Override

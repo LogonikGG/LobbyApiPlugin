@@ -41,6 +41,7 @@ public class LobbyPlugin extends JavaPlugin {
         manager.addSupportedLanguage(ruLocale);
         manager.getLocales().setDefaultLocale(ruLocale);
         manager.registerDependency(LobbyPlayersImpl.class, services.getService(LobbyPlayersImpl.class));
+        manager.registerDependency(LobbyPlayers.class, services.getService(LobbyPlayersImpl.class));
         manager.registerDependency(AllPlayersGui.class, services.getService(AllPlayersGui.class));
 
         manager.registerCommand(new LobbyCommand());
