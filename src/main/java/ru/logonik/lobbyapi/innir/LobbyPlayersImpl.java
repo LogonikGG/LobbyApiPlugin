@@ -101,8 +101,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         PlayerState playerState = players.get(player.getUniqueId());
         Objects.requireNonNull(playerState);
         if (!playerState.isInLobby() && playerState.gameSession() != null) {
-            throw new IllegalStateException("Player `%s` already in game `%s` but trying to add to new one: `%s`"
-                    .formatted(player.getName(), playerState.gameSession().getCommonGameName(), handler.getCommonGameName()));
+            throw new IllegalStateException("Player `"+player.getName()+"` already in game `"+playerState.gameSession().getCommonGameName()+"` but trying to add to new one: `"+handler.getCommonGameName()+"`");
         }
         playerState.setInLobby(false);
         playerState.setGameSession(pluginInfo, handler);

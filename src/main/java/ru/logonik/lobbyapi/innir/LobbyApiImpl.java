@@ -16,7 +16,6 @@ public class LobbyApiImpl implements LobbyApi, Listener {
 
     public LobbyApiImpl(LobbyPlayersImpl lobbyPlayers) {
         this.lobbyPlayers = lobbyPlayers;
-        lobbyPlayers.setLobbyApiImlp(this);
     }
 
     @Override

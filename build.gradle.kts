@@ -5,13 +5,13 @@ plugins {
 }
 
 group = "ru.logonik"
-version = "4.0-SNAPSHOT"
+version = "1.0"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
-    val targetJavaVersion = 21
+    val targetJavaVersion = 11
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
@@ -42,7 +42,7 @@ tasks.withType<JavaCompile> {
     options.forkOptions.executable = "${System.getProperty("java.home")}/bin/javac.exe"
     options.encoding = "UTF-8"
 
-    val targetJavaVersion = 21
+    val targetJavaVersion = 11
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release.set(targetJavaVersion)
     }

@@ -4,7 +4,11 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
 
-public record PluginInfo(Plugin plugin, Runnable onLobbyPluginGoDisable, Boolean shouldAutoReturnToLobbyOnPluginDisable) {
+public final class PluginInfo {
+    private final Plugin plugin;
+    private final Runnable onLobbyPluginGoDisable;
+    private final Boolean shouldAutoReturnToLobbyOnPluginDisable;
+
     public PluginInfo(Plugin plugin) {
         this(plugin, null, true);
     }
@@ -30,4 +34,25 @@ public record PluginInfo(Plugin plugin, Runnable onLobbyPluginGoDisable, Boolean
     public int hashCode() {
         return Objects.hashCode(plugin.getName());
     }
+
+    public Plugin plugin() {
+        return plugin;
+    }
+
+    public Runnable onLobbyPluginGoDisable() {
+        return onLobbyPluginGoDisable;
+    }
+
+    public Boolean shouldAutoReturnToLobbyOnPluginDisable() {
+        return shouldAutoReturnToLobbyOnPluginDisable;
+    }
+
+    @Override
+    public String toString() {
+        return "PluginInfo[" +
+                "plugin=" + plugin + ", " +
+                "onLobbyPluginGoDisable=" + onLobbyPluginGoDisable + ", " +
+                "shouldAutoReturnToLobbyOnPluginDisable=" + shouldAutoReturnToLobbyOnPluginDisable + ']';
+    }
+
 }

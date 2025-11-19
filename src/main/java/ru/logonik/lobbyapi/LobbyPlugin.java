@@ -47,7 +47,7 @@ public class LobbyPlugin extends JavaPlugin {
 
     private void initCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
-        Locale ruLocale = Locale.of("ru");
+        Locale ruLocale = new Locale("ru");
         manager.addSupportedLanguage(ruLocale);
         manager.getLocales().setDefaultLocale(ruLocale);
         manager.registerDependency(InnerLobbyPlayers.class, lobbyPlayersApi);
