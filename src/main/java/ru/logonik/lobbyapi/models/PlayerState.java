@@ -1,6 +1,83 @@
 package ru.logonik.lobbyapi.models;
 
 import org.bukkit.entity.Player;
+import ru.logonik.lobbyapi.api.PluginInfo;
 
-public record PlayerState(Player player, GameSession gameSession) {
+import java.util.Objects;
+
+public final class PlayerState {
+    private Player player;
+    private boolean inLobby;
+    private GameSession gameSession;
+    private GameSession leavedGameSession;
+    private PluginInfo pluginInfo;
+
+    public PlayerState(Player player) {
+        this.player = player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player player() {
+        return player;
+    }
+
+    public void handleQuit() {
+        this.player = null;
+    }
+
+    public boolean isInLobby() {
+        return inLobby;
+    }
+
+    public void setInLobby(boolean inLobby) {
+        this.inLobby = inLobby;
+    }
+
+    public GameSession gameSession() {
+        return gameSession;
+    }
+
+    public PluginInfo pluginInfo() {
+        return pluginInfo;
+    }
+
+    public GameSession leavedGameSession() {
+        return leavedGameSession;
+    }
+
+    public void setLeavedGameSession(PluginInfo pluginInfo, GameSession leavedGameSession) {
+        if(leavedGameSession == null) {
+            this.pluginInfo = null;
+            this.leavedGameSession = null;
+        } else {
+            this.pluginInfo = Objects.requireNonNull(pluginInfo);
+            this.leavedGameSession = leavedGameSession;
+        }
+    }
+
+    public void setGameSession(PluginInfo pluginInfo, GameSession gameSession) {
+        if(gameSession == null) {
+            this.pluginInfo = null;
+            this.gameSession = null;
+        } else {
+            this.pluginInfo = Objects.requireNonNull(pluginInfo);
+            this.gameSession = gameSession;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (PlayerState) obj;
+        return Objects.equals(this.player.getUniqueId(), that.player.getUniqueId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(player.getUniqueId());
+    }
 }

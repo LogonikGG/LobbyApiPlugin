@@ -8,13 +8,16 @@ import ru.logonik.lobbyapi.models.GameSessionInfoHandler;
 import ru.logonik.lobbyapi.models.GameSession;
 import ru.logonik.lobbyapi.models.PlayerState;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class LobbyPlayersMediator implements LobbyPlayers {
 
     private final InnerLobbyPlayers lobbyPlayers;
     private final PluginInfo pluginInfo;
+    private final Set<UUID> playersInUse = new HashSet<>();
 
     public LobbyPlayersMediator(InnerLobbyPlayers lobbyPlayers, PluginInfo pluginInfo) {
         this.lobbyPlayers = lobbyPlayers;

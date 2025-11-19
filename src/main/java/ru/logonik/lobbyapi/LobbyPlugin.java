@@ -7,7 +7,6 @@ import ru.logonik.lobbyapi.api.*;
 import ru.logonik.lobbyapi.commands.LobbyCommand;
 import ru.logonik.lobbyapi.commands.PlayersCommand;
 import ru.logonik.lobbyapi.gui.AllPlayersGui;
-import ru.logonik.lobbyapi.innir.LeaveJoinEventsHandler;
 import ru.logonik.lobbyapi.innir.LobbyApiImpl;
 import ru.logonik.lobbyapi.innir.LobbyPlayersImpl;
 import ru.logonik.spigui.SpiGUI;
@@ -30,8 +29,7 @@ public class LobbyPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         lobbyPlayersApi = new LobbyPlayersImpl(this);
-        LeaveJoinEventsHandler leaveJoinEventsHandler = new LeaveJoinEventsHandler(lobbyPlayersApi);
-        getServer().getPluginManager().registerEvents(leaveJoinEventsHandler, this);
+        getServer().getPluginManager().registerEvents(lobbyPlayersApi, this);
 
         lobbyApi = new LobbyApiImpl(lobbyPlayersApi);
         getServer().getPluginManager().registerEvents(lobbyApi, this);
