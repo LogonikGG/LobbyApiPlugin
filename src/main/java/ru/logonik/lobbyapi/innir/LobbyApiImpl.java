@@ -1,15 +1,12 @@
 package ru.logonik.lobbyapi.innir;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
-import ru.logonik.lobbyapi.LobbyPlugin;
 import ru.logonik.lobbyapi.Logger;
 import ru.logonik.lobbyapi.api.LobbyApi;
 import ru.logonik.lobbyapi.api.LobbyApiException;
-import ru.logonik.lobbyapi.api.OnLobbyPluginLoadListener;
 import ru.logonik.lobbyapi.api.PluginInfo;
 
 import java.util.ArrayList;
@@ -17,12 +14,8 @@ import java.util.HashMap;
 
 public class LobbyApiImpl implements LobbyApi, Listener {
     private final HashMap<String, PluginInfo> plugins = new HashMap<>();
-    private final LobbyPlugin lobbyPlugin;
-    private final LobbyPlayersImpl lobbyPlayers;
 
-    public LobbyApiImpl(LobbyPlugin lobbyPlugin, LobbyPlayersImpl lobbyPlayers) {
-        this.lobbyPlugin = lobbyPlugin;
-        this.lobbyPlayers = lobbyPlayers;
+    public LobbyApiImpl(LobbyPlayersImpl lobbyPlayers) {
         lobbyPlayers.setLobbyApiImlp(this);
     }
 
@@ -52,18 +45,6 @@ public class LobbyApiImpl implements LobbyApi, Listener {
     @EventHandler
     public void onPluginDisable(PluginDisableEvent disableEvent) {
         unregisterPlugin(disableEvent.getPlugin());
-    }
-
-    public void onLobbyPluginStart() {
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if(plugin instanceof OnLobbyPluginLoadListener onLobbyPluginLoadListener) {
-                try {
-                    onLobbyPluginLoadListener.onLobbyPluginEnable(lobbyPlugin);
-                } catch (Exception e) {
-                    Logger.error("Error while LobbyPlugin call method in integrated plugin", e);
-                }
-            }
-        }
     }
 
     public void onLobbyPluginDisable() {

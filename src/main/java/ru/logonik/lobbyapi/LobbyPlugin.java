@@ -33,14 +33,12 @@ public class LobbyPlugin extends JavaPlugin {
         LeaveJoinEventsHandler leaveJoinEventsHandler = new LeaveJoinEventsHandler(lobbyPlayersApi);
         getServer().getPluginManager().registerEvents(leaveJoinEventsHandler, this);
 
-        lobbyApi = new LobbyApiImpl(this, lobbyPlayersApi);
+        lobbyApi = new LobbyApiImpl(lobbyPlayersApi);
         getServer().getPluginManager().registerEvents(lobbyApi, this);
 
         initGui(lobbyPlayersApi);
 
         initCommandManager();
-
-        lobbyApi.onLobbyPluginStart();
     }
 
     private void initGui(LobbyPlayersImpl lobbyPlayersApi) {
