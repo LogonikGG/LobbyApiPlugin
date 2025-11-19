@@ -6,14 +6,14 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Dependency;
 import org.bukkit.entity.Player;
-import ru.logonik.lobbyapi.api.LobbyPlayers;
+import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 
 @CommandAlias("lobby")
 @CommandPermission("command.lobby")
 public class LobbyCommand extends BaseCommand {
 
     @Dependency
-    private LobbyPlayers lobbyPlayersApi;
+    private InnerLobbyPlayers lobbyPlayersApi;
 
 
     @Default

@@ -3,10 +3,7 @@ package ru.logonik.lobbyapi;
 import co.aikar.commands.PaperCommandManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.logonik.lobbyapi.api.LobbyApi;
-import ru.logonik.lobbyapi.api.LobbyApiException;
-import ru.logonik.lobbyapi.api.LobbyPlayers;
-import ru.logonik.lobbyapi.api.PluginInfo;
+import ru.logonik.lobbyapi.api.*;
 import ru.logonik.lobbyapi.commands.LobbyCommand;
 import ru.logonik.lobbyapi.commands.PlayersCommand;
 import ru.logonik.lobbyapi.gui.AllPlayersGui;
@@ -55,8 +52,7 @@ public class LobbyPlugin extends JavaPlugin {
         Locale ruLocale = Locale.of("ru");
         manager.addSupportedLanguage(ruLocale);
         manager.getLocales().setDefaultLocale(ruLocale);
-        manager.registerDependency(LobbyPlayersImpl.class, lobbyPlayersApi);
-        manager.registerDependency(LobbyPlayers.class, lobbyPlayersApi);
+        manager.registerDependency(InnerLobbyPlayers.class, lobbyPlayersApi);
         manager.registerCommand(new LobbyCommand());
 
         if(allPlayersGui != null) {
