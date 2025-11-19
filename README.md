@@ -12,21 +12,29 @@ This plugin provides a shared container for player states on the server, allowin
   -  Force a player to leave another game if they try to join a new one.
 
 ## Usage
-It's important to ensure that game plugins are loaded before `LobbyApiPlugin`.
-This prevents issues such as broken references to **disabled**  plugins in case of reloads (e.g. via Plugman or /reload).
+It's important to ensure that LobbyApiPlugin is loaded before game plugins.
 ### Add in plugin.yml:
 ```yaml
-loadbefore:
-  - LobbyPluginApi
+depend: [LobbyApiPlugin]    # guarantees that API is loaded before your plugin
+# OR
+softdepend: [LobbyApiPlugin] # optional API; your plugin will work even if it's missing
 ```
+
+            // TODO Logonik
+
 ### Hook plugin:
-Implement the `OnLobbyPluginLoadListener` interface.
-This method will be called when LobbyApiPlugin is enabled:
+You can get `LobbyApiPlugin` like this
 ```java
-public final class WoolWarPlugin extends JavaPlugin implements OnLobbyPluginLoadListener {
+public final class WoolWarPlugin extends JavaPlugin {
     @Override
-    public void onLobbyPluginEnable(lobbyPlugin lobbyPlugin) {
-        reInitLobby(lobbyPlugin);
+    public void onEnable() {
+        LobbyPlugin lobbyPlugin = (LobbyPlugin) Bukkit.getPluginManager().getPlugin("LobbyPluginApi");
+        if (lobbyPlugin != null) {
+            lobbyPlugin.getLobbyApi().registerPlugin(new PluginInfo(this, onLobbyPluginGoDisable)); // onLobbyPluginGoDisable - is Runnable
+            LobbyPlayers players = lobbyPlugin.getLobbyPlayersApi();
+
+            //players.registerInGame(player, handler);
+        }
     }
 }
 ```
