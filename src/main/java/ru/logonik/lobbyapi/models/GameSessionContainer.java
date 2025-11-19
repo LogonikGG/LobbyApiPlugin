@@ -2,12 +2,12 @@ package ru.logonik.lobbyapi.models;
 
 import org.bukkit.entity.Player;
 
-public class ContainerHandler implements GameSession {
+public class GameSessionContainer implements GameSession {
 
     private final GameSessionInfoHandler info;
     private final GameSessionGameHandler game;
 
-    public ContainerHandler(GameSessionInfoHandler info, GameSessionGameHandler game) {
+    public GameSessionContainer(GameSessionInfoHandler info, GameSessionGameHandler game) {
         this.info = info;
         this.game = game;
     }

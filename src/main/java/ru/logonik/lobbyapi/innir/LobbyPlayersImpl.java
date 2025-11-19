@@ -81,7 +81,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
 
     @Override
     public void registerInGame(PluginInfo pluginInfo, Player player, GameSessionInfoHandler info, GameSessionGameHandler game) {
-        registerInGame(pluginInfo, player, new ContainerHandler(info, game));
+        registerInGame(pluginInfo, player, new GameSessionContainer(info, game));
     }
 
     @Override
