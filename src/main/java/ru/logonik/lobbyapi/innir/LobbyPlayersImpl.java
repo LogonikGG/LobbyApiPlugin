@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 // todo problems: 1) if mini game plugin disable and not run return, we still think player inside game; 2) bootstrap of leave
 
 public class LobbyPlayersImpl implements InnerLobbyPlayers {
-    private final GameSession gameSession = new GameSesssionHandlerImpl();
+    private final GameSession lobbyGameSession = new GameSesssionHandlerImpl();
     private final Set<UUID> inLobby = new HashSet<>();
     private final Map<UUID, GameSession> inGames = new HashMap<>();
     private final Map<UUID, GameSession> leavedGamers = new HashMap<>();
@@ -119,7 +119,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
         ArrayList<PlayerState> playerStates = new ArrayList<>();
         for (UUID uuid : inLobby) {
             Player player = onlinePlayers.get(uuid);
-            playerStates.add(new PlayerState(player, gameSession));
+            playerStates.add(new PlayerState(player, lobbyGameSession));
         }
         for (Map.Entry<UUID, GameSession> entry : inGames.entrySet()) {
             Player player = onlinePlayers.get(entry.getKey());
