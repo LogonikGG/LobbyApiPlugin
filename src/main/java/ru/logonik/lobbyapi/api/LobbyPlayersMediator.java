@@ -24,47 +24,63 @@ public class LobbyPlayersMediator implements LobbyPlayers {
     }
 
     public void registerInGame( Player player, LobbyAsksInfoHandler info, LobbyAsksGameHandler game) {
+        throwIfPluginDisabled();
         lobbyPlayers.registerInGame(pluginInfo, player, info, game);
     }
 
     public void registerInGame( Player player, LobbyCommonAsksHandler handler) {
+        throwIfPluginDisabled();
         lobbyPlayers.registerInGame(pluginInfo, player, handler);
     }
 
-    public void removeFromRejoin( UUID player) {
+    public void removeFromRejoin(UUID player) {
+        throwIfPluginDisabled();
         lobbyPlayers.removeFromRejoin(pluginInfo, player);
     }
 
     public void removeFromRejoin( Iterable<UUID> players) {
+        throwIfPluginDisabled();
         lobbyPlayers.removeFromRejoin(pluginInfo, players);
     }
 
-    public boolean isFree( Player player) {
+    public boolean isFree(Player player) {
+        throwIfPluginDisabled();
         return lobbyPlayers.isFree(pluginInfo, player);
     }
 
     @Override
     public void returnToLobby(Player player) {
+        throwIfPluginDisabled();
         lobbyPlayers.returnToLobby(player);
     }
 
     @Override
     public void returnToLobbyByGameEnd(Player player) {
+        throwIfPluginDisabled();
         lobbyPlayers.returnToLobbyByGameEnd(pluginInfo, player);
     }
 
     @Override
     public void teleport(Player player) {
+        throwIfPluginDisabled();
         lobbyPlayers.teleport(player);
     }
 
     @Override
     public List<PlayerState> createPlayersStateList() {
+        throwIfPluginDisabled();
         return lobbyPlayers.createPlayersStateList();
     }
 
     @Override
     public @Nullable Location getLobbyLocation() {
+        throwIfPluginDisabled();
         return lobbyPlayers.getLobbyLocation();
+    }
+
+    private void throwIfPluginDisabled() {
+        if (!pluginInfo.plugin().isEnabled()) {
+            throw new IllegalStateException("Plugin is not enabled");
+        }
     }
 }
