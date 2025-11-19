@@ -6,9 +6,11 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import ru.logonik.lobbyapi.Logger;
 import ru.logonik.lobbyapi.api.*;
+import ru.logonik.lobbyapi.models.PlayerState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class LobbyApiImpl implements LobbyApi, Listener {
     private final HashMap<String, PluginInfo> plugins = new HashMap<>();
@@ -33,8 +35,25 @@ public class LobbyApiImpl implements LobbyApi, Listener {
         PluginInfo remove = plugins.remove(pluginKey);
         if(remove != null) {
             Logger.info(pluginKey + " is unregistered");
+            List<PlayerState> playersStateList = lobbyPlayers.createPlayersStateList();
 
+            for (PlayerState playerState : playersStateList) {
+                if (playerState.leavedGameSession() != null && getPluginKey(playerState).equals(pluginKey)) {
+                    playerState.setLeavedGameSession(null, null);
+                }
+            }
+
+            if(remove.shouldAutoReturnToLobbyOnPluginDisable()) {
+                for (PlayerState playerState : playersStateList) {
+                    if(playerState.isInLobby() || playerState.player() == null) continue;
+                    lobbyPlayers.returnToLobby(playerState.player());
+                }
+            }
         }
+    }
+
+    public String getPluginKey(PlayerState playerState) {
+        return getPluginKey(playerState.pluginInfo().plugin());
     }
 
     public String getPluginKey(PluginInfo plugin) {

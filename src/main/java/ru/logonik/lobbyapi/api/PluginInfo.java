@@ -7,19 +7,19 @@ import java.util.Objects;
 public final class PluginInfo {
     private final Plugin plugin;
     private final Runnable onLobbyPluginGoDisable;
-    private final Boolean shouldAutoReturnToLobbyOnPluginDisable;
+    private final boolean shouldAutoReturnToLobbyOnPluginDisable;
 
     public PluginInfo(Plugin plugin) {
         this(plugin, null, true);
     }
 
-    public PluginInfo(Plugin plugin, Runnable onLobbyPluginGoDisable, Boolean shouldAutoReturnToLobbyOnPluginDisable) {
+    public PluginInfo(Plugin plugin, Runnable onLobbyPluginGoDisable, boolean shouldAutoReturnToLobbyOnPluginDisable) {
         this.plugin = plugin;
         this.onLobbyPluginGoDisable = onLobbyPluginGoDisable;
         this.shouldAutoReturnToLobbyOnPluginDisable = shouldAutoReturnToLobbyOnPluginDisable;
     }
 
-    public PluginInfo(Plugin plugin, Boolean shouldAutoReturnToLobbyOnPluginDisable) {
+    public PluginInfo(Plugin plugin, boolean shouldAutoReturnToLobbyOnPluginDisable) {
         this(plugin, null, shouldAutoReturnToLobbyOnPluginDisable);
     }
 
