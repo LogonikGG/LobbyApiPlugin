@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import ru.logonik.lobbyapi.*;
 import ru.logonik.lobbyapi.LobbyPlugin;
 import ru.logonik.lobbyapi.api.LobbyPlayers;
 import ru.logonik.lobbyapi.models.*;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 // todo problems: 1) if mini game plugin disable and not run return, we still think player inside game; 2) bootstrap of leave
 
-public class LobbyPlayersImpl implements LobbyPlayers, PluginDisableListener {
+public class LobbyPlayersImpl implements LobbyPlayers {
     private final LobbyCommonAsksHandler lobbyCommonAsksHandler = new LobbyAsksHandlerImpl();
     private final Set<UUID> inLobby = new HashSet<>();
     private final Map<UUID, LobbyCommonAsksHandler> inGames = new HashMap<>();
@@ -161,8 +160,7 @@ public class LobbyPlayersImpl implements LobbyPlayers, PluginDisableListener {
         }
     }
 
-    @Override
-    public void disable() throws Exception {
+    public void onLobbyPluginDisable() {
         boolean shouldReturnGamers = plugin.getConfig().getBoolean("return_gamers_to_lobby_on_disable", true);
         if (shouldReturnGamers) {
             Map<UUID, Player> onlinePlayers = Bukkit.getOnlinePlayers()

@@ -16,7 +16,9 @@ import java.util.Locale;
 
 public class LobbyPlugin extends JavaPlugin {
 
-    private ServiceLocator services;
+    private LobbyPlayersImpl lobbyPlayersApi;
+    private LobbyApiImpl lobbyApi;
+    private AllPlayersGui allPlayersGui;
 
     @Override
     public void onLoad() {
@@ -25,42 +27,37 @@ public class LobbyPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        services = new ServiceLocator();
         saveDefaultConfig();
 
-        LobbyPlayersImpl lobbyPlayersApi = new LobbyPlayersImpl(this);
+        lobbyPlayersApi = new LobbyPlayersImpl(this);
         LeaveJoinEventsHandler leaveJoinEventsHandler = new LeaveJoinEventsHandler(lobbyPlayersApi);
         getServer().getPluginManager().registerEvents(leaveJoinEventsHandler, this);
-        services.registerService(LobbyPlayersImpl.class, lobbyPlayersApi);
 
-        LobbyApiImpl lobbyApi = new LobbyApiImpl(this, lobbyPlayersApi);
+        lobbyApi = new LobbyApiImpl(this, lobbyPlayersApi);
         getServer().getPluginManager().registerEvents(lobbyApi, this);
-        services.registerService(LobbyApiImpl.class, lobbyApi);
 
         initGui(lobbyPlayersApi);
 
-        initCommandManager(services);
+        initCommandManager();
 
-        services.onPluginEnable();
+        lobbyApi.onLobbyPluginStart();
     }
 
     private void initGui(LobbyPlayersImpl lobbyPlayersApi) {
         SpiGUI spiGUI = new SpiGUI(this);
-        AllPlayersGui allPlayersGui = new AllPlayersGui(spiGUI, lobbyPlayersApi);
-        services.registerService(AllPlayersGui.class, allPlayersGui);
+        allPlayersGui = new AllPlayersGui(spiGUI, lobbyPlayersApi);
     }
 
 
-    private void initCommandManager(ServiceLocator services) {
+    private void initCommandManager() {
         PaperCommandManager manager = new PaperCommandManager(this);
         Locale ruLocale = Locale.of("ru");
         manager.addSupportedLanguage(ruLocale);
         manager.getLocales().setDefaultLocale(ruLocale);
-        manager.registerDependency(LobbyPlayersImpl.class, services.getService(LobbyPlayersImpl.class));
-        manager.registerDependency(LobbyPlayers.class, services.getService(LobbyPlayersImpl.class));
+        manager.registerDependency(LobbyPlayersImpl.class, lobbyPlayersApi);
+        manager.registerDependency(LobbyPlayers.class, lobbyPlayersApi);
         manager.registerCommand(new LobbyCommand());
 
-        AllPlayersGui allPlayersGui = services.getService(AllPlayersGui.class);
         if(allPlayersGui != null) {
             manager.registerDependency(AllPlayersGui.class, allPlayersGui);
             manager.registerCommand(new PlayersCommand());
@@ -68,16 +65,17 @@ public class LobbyPlugin extends JavaPlugin {
     }
 
     public LobbyApi getLobbyApi() {
-        return services.getService(LobbyApiImpl.class);
+        return lobbyApi;
     }
 
     public LobbyPlayers getLobbyPlayersApi() {
-        return services.getService(LobbyPlayersImpl.class);
+        return lobbyPlayersApi;
     }
 
     @Override
     public void onDisable() {
         saveConfig();
-        services.onPluginDisable();
+        lobbyApi.onLobbyPluginDisable();
+        lobbyPlayersApi.onLobbyPluginDisable();
     }
 }
