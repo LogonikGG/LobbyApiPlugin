@@ -4,7 +4,12 @@ import org.bukkit.entity.Player;
 
 public class LobbyAsksHandlerImpl implements LobbyCommonAsksHandler {
     @Override
-    public void onLeave(Player player) {
+    public void onStartReturnToLobby(Player player) {
+
+    }
+
+    @Override
+    public void onEndReturnToLobby(Player player) {
 
     }
 

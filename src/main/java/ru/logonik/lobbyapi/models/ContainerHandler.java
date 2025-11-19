@@ -13,8 +13,13 @@ public class ContainerHandler implements LobbyCommonAsksHandler {
     }
 
     @Override
-    public void onLeave(Player player) {
-        game.onLeave(player);
+    public void onStartReturnToLobby(Player player) {
+        game.onStartReturnToLobby(player);
+    }
+
+    @Override
+    public void onEndReturnToLobby(Player player) {
+        game.onEndReturnToLobby(player);
     }
 
     @Override

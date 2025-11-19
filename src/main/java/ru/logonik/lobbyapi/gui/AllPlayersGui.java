@@ -3,7 +3,7 @@ package ru.logonik.lobbyapi.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import ru.logonik.lobbyapi.LobbyPlayers;
+import ru.logonik.lobbyapi.api.LobbyPlayers;
 import ru.logonik.lobbyapi.models.LobbyCommonAsksHandler;
 import ru.logonik.lobbyapi.models.PlayerState;
 import ru.logonik.lobbyapi.utils.ItemBuilder;

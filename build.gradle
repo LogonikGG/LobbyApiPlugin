@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'ru.logonik'
-version = '3.0-SNAPSHOT'
+version = '4.0-SNAPSHOT'
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 
@@ -47,6 +47,7 @@ dependencies {
     implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
     implementation("com.google.code.gson:gson:2.12.1")
     implementation("ru.logonik:SpiGuiRus:1.0-SNAPSHOT")
+    implementation ("org.jetbrains:annotations:26.0.2")
 }
 
 def targetJavaVersion = 21
