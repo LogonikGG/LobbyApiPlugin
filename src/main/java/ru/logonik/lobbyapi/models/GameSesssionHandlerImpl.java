@@ -2,7 +2,7 @@ package ru.logonik.lobbyapi.models;
 
 import org.bukkit.entity.Player;
 
-public class LobbyAsksHandlerImpl implements LobbyCommonAsksHandler {
+public class GameSesssionHandlerImpl implements GameSession {
     @Override
     public void onStartReturnToLobby(Player player) {
 

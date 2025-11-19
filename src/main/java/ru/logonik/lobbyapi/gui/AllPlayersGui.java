@@ -4,8 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
-import ru.logonik.lobbyapi.api.LobbyPlayers;
-import ru.logonik.lobbyapi.models.LobbyCommonAsksHandler;
+import ru.logonik.lobbyapi.models.GameSession;
 import ru.logonik.lobbyapi.models.PlayerState;
 import ru.logonik.lobbyapi.utils.ItemBuilder;
 import ru.logonik.spigui.SpiGUI;
@@ -32,7 +31,7 @@ public class AllPlayersGui implements LogoGui {
         for (PlayerState state : playersStateList) {
             if(state.player() == null) return;
             ItemBuilder itemBuilder = new ItemBuilder(Material.PLAYER_HEAD).setName(state.player().getName());
-            LobbyCommonAsksHandler info = state.lobbyCommonAsksHandler();
+            GameSession info = state.gameSession();
             ArrayList<String> lore = new ArrayList<>();
             lore.add(info.getCommonGameName());
             if(info.getMapLobbyGameName() != null) {

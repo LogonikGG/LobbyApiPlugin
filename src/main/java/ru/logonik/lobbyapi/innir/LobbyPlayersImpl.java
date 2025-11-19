@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 // todo problems: 1) if mini game plugin disable and not run return, we still think player inside game; 2) bootstrap of leave
 
 public class LobbyPlayersImpl implements InnerLobbyPlayers {
-    private final LobbyCommonAsksHandler lobbyCommonAsksHandler = new LobbyAsksHandlerImpl();
+    private final GameSession gameSession = new GameSesssionHandlerImpl();
     private final Set<UUID> inLobby = new HashSet<>();
-    private final Map<UUID, LobbyCommonAsksHandler> inGames = new HashMap<>();
-    private final Map<UUID, LobbyCommonAsksHandler> leavedGamers = new HashMap<>();
+    private final Map<UUID, GameSession> inGames = new HashMap<>();
+    private final Map<UUID, GameSession> leavedGamers = new HashMap<>();
     private final LobbyPlugin plugin;
     private @Nullable Location lobbyLocation;
     private LobbyApiImpl lobbyApi;
@@ -43,7 +43,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
         if (inLobby.contains(uuid)) {
             return;
         }
-        LobbyCommonAsksHandler gameLeaved = inGames.remove(uuid);
+        GameSession gameLeaved = inGames.remove(uuid);
         inLobby.add(uuid);
         leavedGamers.put(uuid, gameLeaved);
         if (gameLeaved == null) {
@@ -80,12 +80,12 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
     }
 
     @Override
-    public void registerInGame(PluginInfo pluginInfo, Player player, LobbyAsksInfoHandler info, LobbyAsksGameHandler game) {
+    public void registerInGame(PluginInfo pluginInfo, Player player, GameSessionInfoHandler info, GameSessionGameHandler game) {
         registerInGame(pluginInfo, player, new ContainerHandler(info, game));
     }
 
     @Override
-    public void registerInGame(PluginInfo pluginInfo, Player player, LobbyCommonAsksHandler handler) {
+    public void registerInGame(PluginInfo pluginInfo, Player player, GameSession handler) {
         UUID uuid = player.getUniqueId();
         inLobby.remove(uuid);
         inGames.put(uuid, handler);
@@ -119,9 +119,9 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
         ArrayList<PlayerState> playerStates = new ArrayList<>();
         for (UUID uuid : inLobby) {
             Player player = onlinePlayers.get(uuid);
-            playerStates.add(new PlayerState(player, lobbyCommonAsksHandler));
+            playerStates.add(new PlayerState(player, gameSession));
         }
-        for (Map.Entry<UUID, LobbyCommonAsksHandler> entry : inGames.entrySet()) {
+        for (Map.Entry<UUID, GameSession> entry : inGames.entrySet()) {
             Player player = onlinePlayers.get(entry.getKey());
             playerStates.add(new PlayerState(player, entry.getValue()));
         }
@@ -145,7 +145,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
         UUID uuid = player.getUniqueId();
         inLobby.add(uuid);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            LobbyCommonAsksHandler handler = leavedGamers.remove(uuid);
+            GameSession handler = leavedGamers.remove(uuid);
             if (handler != null && handler.tryRejoin(player)) {
                 inLobby.remove(uuid);
                 inGames.put(uuid, handler);
@@ -155,7 +155,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
 
     void handleQuit(Player player) {
         UUID uuid = player.getUniqueId();
-        LobbyCommonAsksHandler handler = inGames.remove(uuid);
+        GameSession handler = inGames.remove(uuid);
         if (handler != null) {
             leavedGamers.put(uuid, handler);
         }
@@ -169,7 +169,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers {
                     .collect(Collectors.toMap(Player::getUniqueId, Function.identity()));
 
             ArrayList<Player> returnPlayers = new ArrayList<>();
-            for (Map.Entry<UUID, LobbyCommonAsksHandler> entry : inGames.entrySet()) {
+            for (Map.Entry<UUID, GameSession> entry : inGames.entrySet()) {
                 Player player = onlinePlayers.get(entry.getKey());
                 returnPlayers.add(player);
             }
