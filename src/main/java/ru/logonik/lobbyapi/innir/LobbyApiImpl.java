@@ -5,33 +5,37 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import ru.logonik.lobbyapi.Logger;
-import ru.logonik.lobbyapi.api.LobbyApi;
-import ru.logonik.lobbyapi.api.LobbyApiException;
-import ru.logonik.lobbyapi.api.PluginInfo;
+import ru.logonik.lobbyapi.api.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LobbyApiImpl implements LobbyApi, Listener {
     private final HashMap<String, PluginInfo> plugins = new HashMap<>();
+    private final LobbyPlayersImpl lobbyPlayers;
 
     public LobbyApiImpl(LobbyPlayersImpl lobbyPlayers) {
+        this.lobbyPlayers = lobbyPlayers;
         lobbyPlayers.setLobbyApiImlp(this);
     }
 
     @Override
-    public void registerPlugin(PluginInfo plugin) throws LobbyApiException {
+    public LobbyPlayers registerPlugin(PluginInfo plugin) throws LobbyApiException {
         String pluginKey = getPluginKey(plugin);
         if(plugins.containsKey(pluginKey)) throw new LobbyApiException("Plugin already registered");
         plugins.put(pluginKey, plugin);
         Logger.info(pluginKey + " is registered");
+        return new LobbyPlayersMediator(lobbyPlayers, plugin);
     }
 
     @Override
     public void unregisterPlugin(Plugin plugin) {
         String pluginKey = getPluginKey(plugin);
-        plugins.remove(pluginKey);
-        Logger.info(pluginKey + " is unregistered");
+        PluginInfo remove = plugins.remove(pluginKey);
+        if(remove != null) {
+            Logger.info(pluginKey + " is unregistered");
+
+        }
     }
 
     public String getPluginKey(PluginInfo plugin) {

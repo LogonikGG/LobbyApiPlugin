@@ -5,7 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import ru.logonik.lobbyapi.LobbyPlugin;
-import ru.logonik.lobbyapi.api.LobbyPlayers;
+import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
+import ru.logonik.lobbyapi.api.PluginInfo;
 import ru.logonik.lobbyapi.models.*;
 
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 // todo problems: 1) if mini game plugin disable and not run return, we still think player inside game; 2) bootstrap of leave
 
-public class LobbyPlayersImpl implements LobbyPlayers {
+public class LobbyPlayersImpl implements InnerLobbyPlayers {
     private final LobbyCommonAsksHandler lobbyCommonAsksHandler = new LobbyAsksHandlerImpl();
     private final Set<UUID> inLobby = new HashSet<>();
     private final Map<UUID, LobbyCommonAsksHandler> inGames = new HashMap<>();
@@ -58,7 +59,7 @@ public class LobbyPlayersImpl implements LobbyPlayers {
     }
 
     @Override
-    public void returnToLobbyByGameEnd(Player player) {
+    public void returnToLobbyByGameEnd(PluginInfo pluginInfo, Player player) {
         UUID uuid = player.getUniqueId();
         inLobby.add(uuid);
         leavedGamers.remove(uuid);
@@ -79,12 +80,12 @@ public class LobbyPlayersImpl implements LobbyPlayers {
     }
 
     @Override
-    public void registerInGame(Player player, LobbyAsksInfoHandler info, LobbyAsksGameHandler game) {
-        registerInGame(player, new ContainerHandler(info, game));
+    public void registerInGame(PluginInfo pluginInfo, Player player, LobbyAsksInfoHandler info, LobbyAsksGameHandler game) {
+        registerInGame(pluginInfo, player, new ContainerHandler(info, game));
     }
 
     @Override
-    public void registerInGame(Player player, LobbyCommonAsksHandler handler) {
+    public void registerInGame(PluginInfo pluginInfo, Player player, LobbyCommonAsksHandler handler) {
         UUID uuid = player.getUniqueId();
         inLobby.remove(uuid);
         inGames.put(uuid, handler);
@@ -92,19 +93,19 @@ public class LobbyPlayersImpl implements LobbyPlayers {
     }
 
     @Override
-    public void removeFromRejoin(UUID player) {
+    public void removeFromRejoin(PluginInfo pluginInfo, UUID player) {
         leavedGamers.remove(player);
     }
 
     @Override
-    public void removeFromRejoin(Iterable<UUID> players) {
+    public void removeFromRejoin(PluginInfo pluginInfo, Iterable<UUID> players) {
         for (UUID player : players) {
             leavedGamers.remove(player);
         }
     }
 
     @Override
-    public boolean isFree(Player player) {
+    public boolean isFree(PluginInfo pluginInfo, Player player) {
         UUID uuid = player.getUniqueId();
         return inLobby.contains(uuid);
     }

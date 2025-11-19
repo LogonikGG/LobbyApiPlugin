@@ -1,9 +1,12 @@
 package ru.logonik.lobbyapi;
 
 import co.aikar.commands.PaperCommandManager;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.logonik.lobbyapi.api.LobbyApi;
+import ru.logonik.lobbyapi.api.LobbyApiException;
 import ru.logonik.lobbyapi.api.LobbyPlayers;
+import ru.logonik.lobbyapi.api.PluginInfo;
 import ru.logonik.lobbyapi.commands.LobbyCommand;
 import ru.logonik.lobbyapi.commands.PlayersCommand;
 import ru.logonik.lobbyapi.gui.AllPlayersGui;
@@ -62,12 +65,12 @@ public class LobbyPlugin extends JavaPlugin {
         }
     }
 
-    public LobbyApi getLobbyApi() {
-        return lobbyApi;
+    public LobbyPlayers registerPlugin(PluginInfo plugin) throws LobbyApiException {
+        return lobbyApi.registerPlugin(plugin);
     }
 
-    public LobbyPlayers getLobbyPlayersApi() {
-        return lobbyPlayersApi;
+    public void unregisterPlugin(Plugin plugin) {
+        lobbyApi.unregisterPlugin(plugin);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ru.logonik.lobbyapi.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 import ru.logonik.lobbyapi.api.LobbyPlayers;
 import ru.logonik.lobbyapi.models.LobbyCommonAsksHandler;
 import ru.logonik.lobbyapi.models.PlayerState;
@@ -16,9 +17,9 @@ import java.util.List;
 
 public class AllPlayersGui implements LogoGui {
     private SGMenu sgMenu;
-    private final LobbyPlayers lobbyPlayers;
+    private final InnerLobbyPlayers lobbyPlayers;
 
-    public AllPlayersGui(SpiGUI spiGUI, LobbyPlayers lobbyPlayers) {
+    public AllPlayersGui(SpiGUI spiGUI, InnerLobbyPlayers lobbyPlayers) {
         this.sgMenu = spiGUI.create("§6§lЛ(ог)ичности", 5);
         this.sgMenu.setAutomaticPaginationEnabled(true);
         this.lobbyPlayers = lobbyPlayers;
