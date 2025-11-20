@@ -77,7 +77,13 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
     public void returnToLobbyByGameEnd(PluginInfo pluginInfo, Player player) {
         PlayerState playerState = players.get(player.getUniqueId());
         Objects.requireNonNull(playerState);
-
+        if (playerState.isInLobby()) {
+            return;
+        }
+        playerState.setInLobby(true);
+        playerState.setGameSession(null, null);
+        playerState.setLeavedGameSession(null, null);
+        playerReturnToLobbyInternal(player);
     }
 
     private void playerReturnToLobbyInternal(Player player) {
