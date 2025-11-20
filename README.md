@@ -1,5 +1,5 @@
-# LobbyApiPlugin
-**LobbyApiPlugin** is a plugin designed to manage player sessions between different plugins.
+# LobbyPluginApi
+**LobbyPluginApi** is a plugin designed to manage player sessions between different plugins.
 It is especially useful on minigame servers **without a proxy** (like Velocity or BungeeCord).
 
 ## Content:
@@ -12,18 +12,18 @@ This plugin provides a shared container for player states on the server, allowin
   -  Force a player to leave another game if they try to join a new one.
 
 ## Usage
-It's important to ensure that LobbyApiPlugin is loaded before game plugins.
+It's important to ensure that LobbyPluginApi is loaded before game plugins.
 ### Add in plugin.yml:
 ```yaml
-depend: [LobbyApiPlugin]    # guarantees that API is loaded before your plugin
+depend: [LobbyPluginApi]    # guarantees that API is loaded before your plugin
 # OR
-softdepend: [LobbyApiPlugin] # optional API; your plugin will work even if it's missing
+softdepend: [LobbyPluginApi] # optional API; your plugin will work even if it's missing
 ```
 
             // TODO Logonik
 
 ### Hook plugin:
-You can get `LobbyApiPlugin` like this
+You can get `LobbyPluginApi` like this
 ```java
 public final class WoolWarPlugin extends JavaPlugin {
     @Override
