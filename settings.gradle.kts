@@ -1,1 +1,1 @@
-rootProject.name = "LobbyApiPlugin"
+rootProject.name = "LobbyPluginApi"
