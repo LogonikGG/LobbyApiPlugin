@@ -53,7 +53,7 @@ public class LobbyApiImpl implements LobbyApi, Listener {
     }
 
     public String getPluginKey(PlayerState playerState) {
-        return getPluginKey(playerState.pluginInfo().plugin());
+        return getPluginKey(playerState.gameSessionPluginInfo().plugin());
     }
 
     public String getPluginKey(PluginInfo plugin) {

@@ -60,7 +60,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
             return;
         }
         GameSession leavedGameSession = playerState.gameSession();
-        PluginInfo pluginInfo = playerState.pluginInfo();
+        PluginInfo pluginInfo = playerState.gameSessionPluginInfo();
         playerState.setInLobby(true);
         playerState.setGameSession(null, null);
         playerState.setLeavedGameSession(pluginInfo, leavedGameSession);

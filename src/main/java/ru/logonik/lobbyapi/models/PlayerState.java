@@ -9,8 +9,9 @@ public final class PlayerState {
     private Player player;
     private boolean inLobby;
     private GameSession gameSession;
+    private PluginInfo gameSessionPluginInfo;
     private GameSession leavedGameSession;
-    private PluginInfo pluginInfo;
+    private PluginInfo leavedGameSessionPluginInfo;
 
     public PlayerState(Player player) {
         this.player = player;
@@ -40,8 +41,12 @@ public final class PlayerState {
         return gameSession;
     }
 
-    public PluginInfo pluginInfo() {
-        return pluginInfo;
+    public PluginInfo gameSessionPluginInfo() {
+        return gameSessionPluginInfo;
+    }
+
+    public PluginInfo leavedGameSessionPluginInfo() {
+        return leavedGameSessionPluginInfo;
     }
 
     public GameSession leavedGameSession() {
@@ -50,20 +55,20 @@ public final class PlayerState {
 
     public void setLeavedGameSession(PluginInfo pluginInfo, GameSession leavedGameSession) {
         if(leavedGameSession == null) {
-            this.pluginInfo = null;
+            this.leavedGameSessionPluginInfo = null;
             this.leavedGameSession = null;
         } else {
-            this.pluginInfo = Objects.requireNonNull(pluginInfo);
+            this.leavedGameSessionPluginInfo = Objects.requireNonNull(pluginInfo);
             this.leavedGameSession = leavedGameSession;
         }
     }
 
     public void setGameSession(PluginInfo pluginInfo, GameSession gameSession) {
         if(gameSession == null) {
-            this.pluginInfo = null;
+            this.gameSessionPluginInfo = null;
             this.gameSession = null;
         } else {
-            this.pluginInfo = Objects.requireNonNull(pluginInfo);
+            this.gameSessionPluginInfo = Objects.requireNonNull(pluginInfo);
             this.gameSession = gameSession;
         }
     }
