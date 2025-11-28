@@ -14,7 +14,6 @@ import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 import ru.logonik.lobbyapi.api.PluginInfo;
 import ru.logonik.lobbyapi.models.*;
 
-import java.awt.print.Paper;
 import java.util.*;
 
 public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
@@ -43,7 +42,18 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
     private void handleJoin(Player player) {
         players.merge(player.getUniqueId(), new PlayerState(player), (oldPlayerState, newPlayerState) -> {
             oldPlayerState.setPlayer(player);
+            tryRejoinInNextTick(oldPlayerState);
             return oldPlayerState;
+        });
+    }
+
+    private void tryRejoinInNextTick(PlayerState playerState) {
+        if(playerState == null || playerState.leavedGameSession() == null) return;
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if(playerState.leavedGameSessionPluginInfo().plugin().isEnabled()
+                    && playerState.player() != null) {
+                playerState.leavedGameSession().tryRejoin(playerState.player());
+            }
         });
     }
 
