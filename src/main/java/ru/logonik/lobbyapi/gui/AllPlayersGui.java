@@ -3,6 +3,7 @@ package ru.logonik.lobbyapi.gui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 import ru.logonik.lobbyapi.models.GameSession;
 import ru.logonik.lobbyapi.models.PlayerState;
@@ -31,8 +32,16 @@ public class AllPlayersGui implements LogoGui {
         for (PlayerState state : playersStateList) {
             if(state.player() == null) return;
             ItemBuilder itemBuilder = new ItemBuilder(Material.PLAYER_HEAD).setName(state.player().getName());
-            GameSession info = state.gameSession();
-            ArrayList<String> lore = new ArrayList<>();
+            ArrayList<String> lore = getInfoList(state);
+            itemBuilder.setLore(lore);
+            sgMenu.addButton(new SGButton(itemBuilder.toItemStack()));
+        }
+    }
+
+    private static @NotNull ArrayList<String> getInfoList(PlayerState state) {
+        GameSession info = state.gameSession();
+        ArrayList<String> lore = new ArrayList<>();
+        if(info != null) {
             lore.add(info.getCommonGameName());
             if(info.getMapLobbyGameName() != null) {
                 lore.add(info.getMapLobbyGameName());
@@ -40,9 +49,10 @@ public class AllPlayersGui implements LogoGui {
             if(info.getDescriptionOfCurrentState() != null) {
                 lore.add(info.getDescriptionOfCurrentState());
             }
-            itemBuilder.setLore(lore);
-            sgMenu.addButton(new SGButton(itemBuilder.toItemStack()));
+        } else {
+            lore.add("Не в игре");
         }
+        return lore;
     }
 
     public void open(Player player) {
