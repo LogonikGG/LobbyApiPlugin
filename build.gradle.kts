@@ -53,7 +53,7 @@ tasks.shadowJar {
     relocate("co.aikar.locales", "ru.logonik.lobbyapi.locales")
 
     archiveFileName.set("${project.name}-${project.version}.jar")
-    destinationDirectory.set(file("D://Users/GG/Desktop/Logonik/NowUsed/1.21.1_WhiteHell_castle/plugins"))
+    // destinationDirectory.set(file("D://Users/GG/Desktop/Logonik/NowUsed/1.21.1_WhiteHell_castle/plugins"))
 }
 
 tasks.build {
