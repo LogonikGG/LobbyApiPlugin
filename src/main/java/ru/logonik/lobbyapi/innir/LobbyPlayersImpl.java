@@ -1,5 +1,6 @@
 package ru.logonik.lobbyapi.innir;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 import ru.logonik.lobbyapi.api.PluginInfo;
 import ru.logonik.lobbyapi.models.*;
 
+import java.awt.print.Paper;
 import java.util.*;
 
 public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
@@ -61,7 +63,6 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         }
         GameSession leavedGameSession = playerState.gameSession();
         PluginInfo pluginInfo = playerState.gameSessionPluginInfo();
-        playerState.setInLobby(true);
         playerState.setGameSession(null, null);
         playerState.setLeavedGameSession(pluginInfo, leavedGameSession);
 
@@ -85,7 +86,6 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         if (playerState.isInLobby()) {
             return;
         }
-        playerState.setInLobby(true);
         playerState.setGameSession(null, null);
         playerState.setLeavedGameSession(null, null);
         playerReturnToLobbyInternal(player);
@@ -114,7 +114,6 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         if (!playerState.isInLobby() && playerState.gameSession() != null) {
             throw new IllegalStateException("Player `"+player.getName()+"` already in game `"+playerState.gameSession().getCommonGameName()+"` but trying to add to new one: `"+handler.getCommonGameName()+"`");
         }
-        playerState.setInLobby(false);
         playerState.setGameSession(pluginInfo, handler);
         playerState.setLeavedGameSession(null, null);
     }

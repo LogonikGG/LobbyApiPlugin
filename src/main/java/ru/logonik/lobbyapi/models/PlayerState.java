@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public final class PlayerState {
     private Player player;
-    private boolean inLobby;
     private GameSession gameSession;
     private PluginInfo gameSessionPluginInfo;
     private GameSession leavedGameSession;
@@ -30,11 +29,7 @@ public final class PlayerState {
     }
 
     public boolean isInLobby() {
-        return inLobby;
-    }
-
-    public void setInLobby(boolean inLobby) {
-        this.inLobby = inLobby;
+        return gameSession == null;
     }
 
     public GameSession gameSession() {
