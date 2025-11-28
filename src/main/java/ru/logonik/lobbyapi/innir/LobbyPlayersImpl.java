@@ -65,6 +65,11 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         playerState.setGameSession(null, null);
         playerState.setLeavedGameSession(pluginInfo, leavedGameSession);
 
+        if(leavedGameSession == null) {
+            playerReturnToLobbyInternal(player);
+            return;
+        }
+
         try {
             leavedGameSession.onStartReturnToLobby(player);
         } finally {
