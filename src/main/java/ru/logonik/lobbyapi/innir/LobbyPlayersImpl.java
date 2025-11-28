@@ -66,11 +66,6 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         playerState.setGameSession(null, null);
         playerState.setLeavedGameSession(pluginInfo, leavedGameSession);
 
-        if(leavedGameSession == null) {
-            playerReturnToLobbyInternal(player);
-            return;
-        }
-
         try {
             leavedGameSession.onStartReturnToLobby(player);
         } finally {
@@ -109,6 +104,8 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
 
     @Override
     public void registerInGame(PluginInfo pluginInfo, Player player, GameSession handler) {
+        Objects.requireNonNull(pluginInfo);
+        Objects.requireNonNull(handler);
         PlayerState playerState = players.get(player.getUniqueId());
         Objects.requireNonNull(playerState);
         if (!playerState.isInLobby() && playerState.gameSession() != null) {
