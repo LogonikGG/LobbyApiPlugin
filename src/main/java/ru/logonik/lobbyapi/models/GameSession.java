@@ -2,12 +2,14 @@ package ru.logonik.lobbyapi.models;
 
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public interface GameSession {
     String getCommonGameName();
     String getMapLobbyGameName();
     String getDescriptionOfCurrentState();
 
-    void onStartReturnToLobby(Player player);
-    void onEndReturnToLobby(Player player);
+    boolean canBeForceLeft(UUID player);
+    void forceLeave(UUID player);
     boolean tryRejoin(Player player);
 }

@@ -12,7 +12,8 @@ import org.jetbrains.annotations.Nullable;
 import ru.logonik.lobbyapi.LobbyPlugin;
 import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 import ru.logonik.lobbyapi.api.PluginInfo;
-import ru.logonik.lobbyapi.models.*;
+import ru.logonik.lobbyapi.models.GameSession;
+import ru.logonik.lobbyapi.models.PlayerState;
 
 import java.util.*;
 
@@ -31,15 +32,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        handleJoin(e.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerLeave(PlayerQuitEvent e) {
-        handleQuit(e.getPlayer());
-    }
-
-    private void handleJoin(Player player) {
+        Player player = e.getPlayer();
         players.merge(player.getUniqueId(), new PlayerState(player), (oldPlayerState, newPlayerState) -> {
             oldPlayerState.setPlayer(player);
             tryRejoinInNextTick(oldPlayerState);
@@ -47,84 +40,97 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         });
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        PlayerState playerState = players.get(player.getUniqueId());
+        if (playerState != null) {
+            playerState.handleQuit();
+            if(playerState.gameSession() != null) {
+                playerState.setLeavedGameSession(playerState.gameSessionPluginInfo(), playerState.gameSession());
+            }
+        }
+    }
+
     private void tryRejoinInNextTick(PlayerState playerState) {
-        if(playerState == null || playerState.leavedGameSession() == null) return;
+        if (playerState == null || playerState.leavedGameSession() == null) return;
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if(playerState.leavedGameSessionPluginInfo().plugin().isEnabled()
+            if (playerState.leavedGameSession() == null || playerState.leavedGameSessionPluginInfo() == null) return;
+            if (playerState.leavedGameSessionPluginInfo().plugin().isEnabled()
                     && playerState.player() != null) {
                 playerState.leavedGameSession().tryRejoin(playerState.player());
             }
         });
     }
 
-    private void handleQuit(Player player) {
-        PlayerState playerState = players.get(player.getUniqueId());
-        if (playerState != null) {
-            playerState.handleQuit();
-        }
+    @Override
+    public boolean isFree(UUID player) {
+        PlayerState playerState = players.get(player);
+        if (playerState == null) return true;
+        return playerState.isInLobby();
     }
 
     @Override
-    public void returnToLobby(Player player) {
-        PlayerState playerState = players.get(player.getUniqueId());
-        Objects.requireNonNull(playerState);
-        if (playerState.isInLobby()) {
-            return;
-        }
-        GameSession leavedGameSession = playerState.gameSession();
-        PluginInfo pluginInfo = playerState.gameSessionPluginInfo();
-        playerState.setGameSession(null, null);
-        playerState.setLeavedGameSession(pluginInfo, leavedGameSession);
-
-        try {
-            leavedGameSession.onStartReturnToLobby(player);
-        } finally {
-            playerReturnToLobbyInternal(player);
-            leavedGameSession.onEndReturnToLobby(player);
-        }
-    }
-
-    @Override
-    public void returnToLobbyByGameEnd(PluginInfo pluginInfo, Player player) {
-        PlayerState playerState = players.get(player.getUniqueId());
-        Objects.requireNonNull(playerState);
-        if (playerState.isInLobby()) {
-            return;
-        }
-        playerState.setGameSession(null, null);
-        playerState.setLeavedGameSession(null, null);
-        playerReturnToLobbyInternal(player);
-    }
-
-    private void playerReturnToLobbyInternal(Player player) {
-        teleport(player);
-    }
-
-    @Override
-    public void teleport(Player player) {
-        if (lobbyLocation != null) {
-            player.teleport(lobbyLocation);
-        }
-    }
-
-    @Override
-    public void registerInGame(PluginInfo pluginInfo, Player player, GameSession handler) {
+    public boolean forbiddenTransfer(PluginInfo pluginInfo, UUID player, GameSession newGameSession) {
         Objects.requireNonNull(pluginInfo);
-        Objects.requireNonNull(handler);
-        PlayerState playerState = players.get(player.getUniqueId());
-        Objects.requireNonNull(playerState);
-        if (!playerState.isInLobby() && playerState.gameSession() != null) {
-            throw new IllegalStateException("Player `"+player.getName()+"` already in game `"+playerState.gameSession().getCommonGameName()+"` but trying to add to new one: `"+handler.getCommonGameName()+"`");
+        Objects.requireNonNull(newGameSession);
+        PlayerState playerState = players.get(player);
+        if (playerState == null) return true;
+        GameSession gameSession = playerState.gameSession();
+        return !newGameSession.equals(gameSession) && !gameSession.canBeForceLeft(player);
+    }
+
+    @Override
+    public void processJoin(PluginInfo pluginInfo, UUID player, GameSession newGameSession) {
+        Objects.requireNonNull(pluginInfo);
+        Objects.requireNonNull(newGameSession);
+        PlayerState playerState = getPlayerState(player);
+        GameSession currentGameSession = playerState.gameSession();
+
+        if (!currentGameSession.equals(newGameSession)) {
+            if (!currentGameSession.canBeForceLeft(player)) {
+                throw new IllegalStateException("Player `" + player + "` in session `" + playerState.gameSession().getCommonGameName() + "` but trying to leaved by : `" + newGameSession.getCommonGameName() + "`");
+            }
+            currentGameSession.forceLeave(player);
         }
-        playerState.setGameSession(pluginInfo, handler);
+        playerState.setGameSession(pluginInfo, newGameSession);
         playerState.setLeavedGameSession(null, null);
+    }
+
+    @Override
+    public void processLeave(PluginInfo pluginInfo, UUID player, GameSession requereGameSession) {
+        Objects.requireNonNull(pluginInfo);
+        Objects.requireNonNull(requereGameSession);
+        PlayerState playerState = getPlayerState(player);
+        Objects.requireNonNull(playerState);
+        GameSession currentGameSession = playerState.gameSession();
+        if (currentGameSession.equals(requereGameSession)) {
+            playerState.setGameSession(null, null);
+            playerState.setLeavedGameSession(null, null);
+        } else if (currentGameSession.canBeForceLeft(player)) {
+            currentGameSession.forceLeave(player);
+            playerState.setGameSession(null, null);
+            playerState.setLeavedGameSession(null, null);
+        } else {
+            throw new IllegalStateException("Player `" + player + "` in session `" + playerState.gameSession().getCommonGameName() + "` but trying to leaved by : `" + requereGameSession.getCommonGameName() + "`");
+        }
+    }
+
+    private PlayerState getPlayerState(UUID player) {
+        PlayerState playerState = players.get(player);
+        if(playerState != null) return playerState;
+        Player onlinePlayer = Bukkit.getPlayer(player);
+        if(onlinePlayer == null) throw new IllegalArgumentException(player + " is not online player");
+        PlayerState newPlayerState = new PlayerState(onlinePlayer);
+        players.put(player, newPlayerState);
+        return newPlayerState;
     }
 
     @Override
     public void removeFromRejoin(PluginInfo pluginInfo, UUID player) {
         PlayerState playerState = players.get(player);
         if (playerState != null) {
-            playerState.setLeavedGameSession(null, null);
+            removeFromRejoinLogic(player, playerState);
         }
     }
 
@@ -133,26 +139,23 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         for (UUID player : players) {
             PlayerState playerState = this.players.get(player);
             if (playerState != null) {
-                playerState.setLeavedGameSession(null, null);
+                removeFromRejoinLogic(player, playerState);
+            }
+        }
+    }
+
+    private void removeFromRejoinLogic(UUID player, PlayerState playerState) {
+        if(playerState.leavedGameSession() != null) {
+            playerState.setLeavedGameSession(null, null);
+            if(playerState.player() == null && playerState.gameSession() == null) {
+                players.remove(player);
             }
         }
     }
 
     @Override
-    public boolean isFree(PluginInfo pluginInfo, Player player) {
-        PlayerState playerState = players.get(player.getUniqueId());
-        Objects.requireNonNull(playerState);
-        return playerState.isInLobby();
-    }
-
-    @Override
     public List<PlayerState> createPlayersStateList() {
         return new ArrayList<>(players.values());
-    }
-
-    @Override
-    public @Nullable Location getLobbyLocation() {
-        return lobbyLocation;
     }
 
     public void setLobbyLocation(@Nullable Location location) {
@@ -171,6 +174,13 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
                     returnToLobby(playerStates.player());
                 }
             }
+        }
+    }
+
+    @Override
+    public void returnToLobby(Player player) {
+        if (lobbyLocation != null) {
+            player.teleport(lobbyLocation);
         }
     }
 }

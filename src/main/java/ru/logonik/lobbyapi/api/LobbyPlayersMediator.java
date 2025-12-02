@@ -15,61 +15,35 @@ public class LobbyPlayersMediator implements LobbyPlayers {
 
     private final InnerLobbyPlayers lobbyPlayers;
     private final PluginInfo pluginInfo;
-    private final Set<UUID> playersInUse = new HashSet<>();
 
     public LobbyPlayersMediator(InnerLobbyPlayers lobbyPlayers, PluginInfo pluginInfo) {
         this.lobbyPlayers = lobbyPlayers;
         this.pluginInfo = pluginInfo;
     }
 
-    public void registerInGame( Player player, GameSession handler) {
-        throwIfPluginDisabled();
-        lobbyPlayers.registerInGame(pluginInfo, player, handler);
+    @Override
+    public boolean isFree(UUID player) {
+        return lobbyPlayers.isFree(player);
+    }
+
+    public boolean forbiddenTransfer(UUID player, GameSession handler) {
+        return lobbyPlayers.forbiddenTransfer(pluginInfo, player, handler);
+    }
+
+    public void processJoin( UUID player, GameSession handler) {
+        lobbyPlayers.processJoin(pluginInfo, player, handler);
+    }
+
+    public void processLeave(UUID player, GameSession handler) {
+        lobbyPlayers.processLeave(pluginInfo, player, handler);
     }
 
     public void removeFromRejoin(UUID player) {
-        throwIfPluginDisabled();
         lobbyPlayers.removeFromRejoin(pluginInfo, player);
     }
 
-    public void removeFromRejoin( Iterable<UUID> players) {
-        throwIfPluginDisabled();
+    public void removeFromRejoin(Iterable<UUID> players) {
         lobbyPlayers.removeFromRejoin(pluginInfo, players);
-    }
-
-    public boolean isFree(Player player) {
-        throwIfPluginDisabled();
-        return lobbyPlayers.isFree(pluginInfo, player);
-    }
-
-    @Override
-    public void returnToLobby(Player player) {
-        throwIfPluginDisabled();
-        lobbyPlayers.returnToLobby(player);
-    }
-
-    @Override
-    public void returnToLobbyByGameEnd(Player player) {
-        throwIfPluginDisabled();
-        lobbyPlayers.returnToLobbyByGameEnd(pluginInfo, player);
-    }
-
-    @Override
-    public void teleport(Player player) {
-        throwIfPluginDisabled();
-        lobbyPlayers.teleport(player);
-    }
-
-    @Override
-    public List<PlayerState> createPlayersStateList() {
-        throwIfPluginDisabled();
-        return lobbyPlayers.createPlayersStateList();
-    }
-
-    @Override
-    public @Nullable Location getLobbyLocation() {
-        throwIfPluginDisabled();
-        return lobbyPlayers.getLobbyLocation();
     }
 
     private void throwIfPluginDisabled() {
