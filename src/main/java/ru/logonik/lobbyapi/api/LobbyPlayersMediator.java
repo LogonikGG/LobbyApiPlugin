@@ -3,8 +3,6 @@ package ru.logonik.lobbyapi.api;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import ru.logonik.lobbyapi.models.GameSessionGameHandler;
-import ru.logonik.lobbyapi.models.GameSessionInfoHandler;
 import ru.logonik.lobbyapi.models.GameSession;
 import ru.logonik.lobbyapi.models.PlayerState;
 
@@ -22,11 +20,6 @@ public class LobbyPlayersMediator implements LobbyPlayers {
     public LobbyPlayersMediator(InnerLobbyPlayers lobbyPlayers, PluginInfo pluginInfo) {
         this.lobbyPlayers = lobbyPlayers;
         this.pluginInfo = pluginInfo;
-    }
-
-    public void registerInGame(Player player, GameSessionInfoHandler info, GameSessionGameHandler game) {
-        throwIfPluginDisabled();
-        lobbyPlayers.registerInGame(pluginInfo, player, info, game);
     }
 
     public void registerInGame( Player player, GameSession handler) {

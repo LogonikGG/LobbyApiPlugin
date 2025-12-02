@@ -108,11 +108,6 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
     }
 
     @Override
-    public void registerInGame(PluginInfo pluginInfo, Player player, GameSessionInfoHandler info, GameSessionGameHandler game) {
-        registerInGame(pluginInfo, player, new GameSessionContainer(info, game));
-    }
-
-    @Override
     public void registerInGame(PluginInfo pluginInfo, Player player, GameSession handler) {
         Objects.requireNonNull(pluginInfo);
         Objects.requireNonNull(handler);

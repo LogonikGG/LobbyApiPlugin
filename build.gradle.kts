@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.logonik"
-version = "1.0"
+version = "2.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
