@@ -41,7 +41,16 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerLeave(PlayerQuitEvent e) {
+    public void onPlayerLeavePre(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        PlayerState playerState = players.get(player.getUniqueId());
+        if (playerState != null) {
+            playerState.handleQuit();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerLeavePost(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         PlayerState playerState = players.get(player.getUniqueId());
         if (playerState != null) {
@@ -77,7 +86,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         PlayerState playerState = players.get(player);
         if (playerState == null) return true;
         GameSession gameSession = playerState.gameSession();
-        return !newGameSession.equals(gameSession) && !gameSession.canBeForceLeft(player);
+        return !newGameSession.equals(gameSession) && gameSession != null && !gameSession.canBeForceLeft(player);
     }
 
     @Override
@@ -87,7 +96,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         PlayerState playerState = getPlayerState(player);
         GameSession currentGameSession = playerState.gameSession();
 
-        if (!currentGameSession.equals(newGameSession)) {
+        if (currentGameSession != null && !currentGameSession.equals(newGameSession)) {
             if (!currentGameSession.canBeForceLeft(player)) {
                 throw new IllegalStateException("Player `" + player + "` in session `" + playerState.gameSession().getCommonGameName() + "` but trying to leaved by : `" + newGameSession.getCommonGameName() + "`");
             }
@@ -104,6 +113,7 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         PlayerState playerState = getPlayerState(player);
         Objects.requireNonNull(playerState);
         GameSession currentGameSession = playerState.gameSession();
+        if(currentGameSession == null) return;
         if (currentGameSession.equals(requereGameSession)) {
             playerState.setGameSession(null, null);
             playerState.setLeavedGameSession(null, null);
