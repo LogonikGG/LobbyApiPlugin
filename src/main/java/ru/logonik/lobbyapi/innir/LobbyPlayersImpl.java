@@ -46,6 +46,9 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         PlayerState playerState = players.get(player.getUniqueId());
         if (playerState != null) {
             playerState.handleQuit();
+            if(playerState.gameSession() != null) {
+                playerState.setLeavedGameSession(playerState.gameSessionPluginInfo(), playerState.gameSession());
+            }
         }
     }
 
@@ -54,9 +57,8 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         Player player = e.getPlayer();
         PlayerState playerState = players.get(player.getUniqueId());
         if (playerState != null) {
-            playerState.handleQuit();
-            if(playerState.gameSession() != null) {
-                playerState.setLeavedGameSession(playerState.gameSessionPluginInfo(), playerState.gameSession());
+            if(playerState.leavedGameSession() == null) {
+                players.remove(player.getUniqueId());
             }
         }
     }
