@@ -11,5 +11,5 @@ public interface GameSession {
 
     boolean canBeForceLeft(UUID player);
     void forceLeave(UUID player);
-    boolean tryRejoin(Player player);
+    void tryRejoin(Player player);
 }

@@ -118,11 +118,9 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
         if(currentGameSession == null) return;
         if (currentGameSession.equals(requereGameSession)) {
             playerState.setGameSession(null, null);
-            playerState.setLeavedGameSession(null, null);
         } else if (currentGameSession.canBeForceLeft(player)) {
             currentGameSession.forceLeave(player);
             playerState.setGameSession(null, null);
-            playerState.setLeavedGameSession(null, null);
         } else {
             throw new IllegalStateException("Player `" + player + "` in session `" + playerState.gameSession().getCommonGameName() + "` but trying to leaved by : `" + requereGameSession.getCommonGameName() + "`");
         }
