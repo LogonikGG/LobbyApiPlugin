@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface InnerLobbyPlayers {
     boolean isFree(UUID player);
+    void leaveIfAllowedForAnotherSession(PluginInfo pluginInfo, UUID player, GameSession requereGameSession);
     boolean forbiddenTransfer(PluginInfo pluginInfo, UUID player, GameSession handler);
     void processJoin(PluginInfo pluginInfo, UUID player, GameSession handler);
     void processLeave(PluginInfo pluginInfo, UUID player, GameSession handler);

@@ -82,6 +82,20 @@ public class LobbyPlayersImpl implements InnerLobbyPlayers, Listener {
     }
 
     @Override
+    public void leaveIfAllowedForAnotherSession(PluginInfo pluginInfo, UUID player, GameSession requereGameSession) {
+        Objects.requireNonNull(pluginInfo);
+        Objects.requireNonNull(requereGameSession);
+        PlayerState playerState = getPlayerState(player);
+        Objects.requireNonNull(playerState);
+        GameSession currentGameSession = playerState.gameSession();
+        if(currentGameSession == null) return;
+        if (!currentGameSession.equals(requereGameSession) && currentGameSession.canBeForceLeft(player)) {
+            currentGameSession.forceLeave(player);
+            playerState.setGameSession(null, null);
+        }
+    }
+
+    @Override
     public boolean forbiddenTransfer(PluginInfo pluginInfo, UUID player, GameSession newGameSession) {
         Objects.requireNonNull(pluginInfo);
         Objects.requireNonNull(newGameSession);

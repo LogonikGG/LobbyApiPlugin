@@ -26,6 +26,11 @@ public class LobbyPlayersMediator implements LobbyPlayers {
         return lobbyPlayers.isFree(player);
     }
 
+    @Override
+    public void leaveIfAllowedForAnotherSession(UUID player, GameSession requereGameSession) {
+        lobbyPlayers.leaveIfAllowedForAnotherSession(pluginInfo, player, requereGameSession);
+    }
+
     public boolean forbiddenTransfer(UUID player, GameSession handler) {
         return lobbyPlayers.forbiddenTransfer(pluginInfo, player, handler);
     }
