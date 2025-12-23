@@ -8,8 +8,8 @@ import co.aikar.commands.annotation.Dependency;
 import org.bukkit.entity.Player;
 import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 
-@CommandAlias("lobby")
-@CommandPermission("command.lobby")
+@CommandAlias("spawn")
+@CommandPermission("command.spawn")
 public class LobbyCommand extends BaseCommand {
 
     @Dependency
@@ -17,7 +17,7 @@ public class LobbyCommand extends BaseCommand {
 
 
     @Default
-    public void lobby(Player player) {
+    public void spawn(Player player) {
         lobbyPlayersApi.returnToLobby(player);
     }
 }
