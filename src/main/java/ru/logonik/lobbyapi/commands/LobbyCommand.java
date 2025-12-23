@@ -8,6 +8,8 @@ import co.aikar.commands.annotation.Dependency;
 import org.bukkit.entity.Player;
 import ru.logonik.lobbyapi.api.InnerLobbyPlayers;
 
+// todo: set spawn positions
+
 @CommandAlias("spawn")
 @CommandPermission("command.spawn")
 public class LobbyCommand extends BaseCommand {
